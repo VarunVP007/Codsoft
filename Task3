@@ -1,0 +1,92 @@
+// Codsoft Task-3
+//TIC-TAC-TOE GAME
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void displayBoard(const vector<char>& board) {
+    cout << "TIC-TAC-TOE GAME\n";
+    cout << "Current board:\n";
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            cout << board[i * 3 + j] << " ";
+        }
+        cout << "\n";
+    }
+}
+
+//check for a win
+bool checkWin(const vector<char>& board, char player) {
+    // Check rows, columns, and diagonals
+    for (int i = 0; i < 3; ++i) {
+        if ((board[i * 3] == player && board[i * 3 + 1] == player && board[i * 3 + 2] == player) || // Rows
+            (board[i] == player && board[i + 3] == player && board[i + 6] == player)) { // Columns
+            return true;
+        }
+    }
+    // Diagonals
+    if ((board[0] == player && board[4] == player && board[8] == player) || // \ Diagonal
+        (board[2] == player && board[4] == player && board[6] == player)) { // / Diagonal
+        return true;
+    }
+    return false;
+}
+
+// check for a draw
+bool checkDraw(const vector<char>& board) {
+    for (char cell : board) {
+        if (cell == ' ') {
+            return false; // If any cell is empty, the game is not a draw
+        }
+    }
+    return true; // All cells are filled
+}
+
+int main() {
+    char playAgain;
+    do {
+        vector<char> board(9, ' '); // Initialize the board with empty spaces
+        char currentPlayer = 'X';
+        bool gameWon = false;
+
+        while (!gameWon) {
+            displayBoard(board);
+            int move;
+            cout << "Player " << currentPlayer << ", enter your move (1-9): ";
+            cin >> move;
+
+            // Adjust for 0-indexing
+            move--; 
+
+            // Check if the move is valid
+            if (move < 0 || move >= 9 || board[move] != ' ') {
+                cout << "Invalid move. Try again.\n";
+                continue;
+            }
+
+            // Update the board
+            board[move] = currentPlayer;
+
+            // Check for win or draw
+            if (checkWin(board, currentPlayer)) {
+                displayBoard(board);
+                cout << "Player " << currentPlayer << " wins!\n";
+                gameWon = true;
+            } else if (checkDraw(board)) {
+                displayBoard(board);
+                cout << "The game is a draw!\n";
+                gameWon = true;
+            }
+
+            // Switch players
+            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        }
+
+        cout << "Do you want to play again? (Y/N): ";
+        cin >> playAgain;
+
+    } while (playAgain == 'Y' || playAgain == 'y');
+
+    cout << "Thanks for playing!\n";
+    return 0;
+}
